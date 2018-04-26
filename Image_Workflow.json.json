@@ -1,17 +1,26 @@
 [
     {
-        "id": "a64c8781.763fd8",
-        "type": "tab",
-        "label": "Flow 4",
-        "disabled": true,
-        "info": ""
+        "id": "859bc6c4.114b48",
+        "type": "function",
+        "z": "a64c8781.763fd8",
+        "name": "Add Metadata",
+        "func": "msg.deviceid = flow.get(\"deviceid\")\nmsg.capturetime = flow.get(\"capturetime\")\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 700,
+        "y": 300,
+        "wires": [
+            [
+                "e75b4832.4b7158"
+            ]
+        ]
     },
     {
         "id": "383f6199.41c0fe",
         "type": "inject",
         "z": "a64c8781.763fd8",
         "name": "Trigger raspistill",
-        "topic": "b827",
+        "topic": "IoT-Camera",
         "payload": "",
         "payloadType": "str",
         "repeat": "3600",
@@ -24,7 +33,8 @@
             [
                 "4f6d62a8.f84d9c",
                 "217a872c.3673e8",
-                "a04d23be.21ca4"
+                "a04d23be.21ca4",
+                "36e2e869.681858"
             ]
         ]
     },
@@ -46,7 +56,7 @@
         "id": "4f6d62a8.f84d9c",
         "type": "exec",
         "z": "a64c8781.763fd8",
-        "command": "raspistill -op 10 -t 10 -o /home/pi/camera/pi-cam.jpg -q 100",
+        "command": "raspistill -op 10 -t 10 -o /home/pi/camera/pi-cam.jpg -q 8",
         "addpay": true,
         "append": "",
         "useSpawn": "false",
@@ -154,7 +164,7 @@
         "z": "a64c8781.763fd8",
         "name": "Store to DB",
         "cloudant": "55590413.124cec",
-        "database": "pi-cam-buffer-obj",
+        "database": "camt",
         "service": "_ext_",
         "payonly": false,
         "operation": "insert",
@@ -274,22 +284,6 @@
         "wires": []
     },
     {
-        "id": "859bc6c4.114b48",
-        "type": "function",
-        "z": "a64c8781.763fd8",
-        "name": "Add Metadata",
-        "func": "msg.topic = flow.get(\"deviceid\")\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 680,
-        "y": 300,
-        "wires": [
-            [
-                "e75b4832.4b7158"
-            ]
-        ]
-    },
-    {
         "id": "7c346124.7eeef",
         "type": "function",
         "z": "a64c8781.763fd8",
@@ -302,6 +296,57 @@
         "wires": [
             [
                 "2cbac6e7.555a1a"
+            ]
+        ]
+    },
+    {
+        "id": "36e2e869.681858",
+        "type": "exec",
+        "z": "a64c8781.763fd8",
+        "command": "date \"+%T-%Y%m%d\"",
+        "addpay": false,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "Get Capture Time",
+        "x": 310,
+        "y": 540,
+        "wires": [
+            [
+                "50011d9c.df1f14"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "b63827b5.2cecd8",
+        "type": "debug",
+        "z": "a64c8781.763fd8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "payload",
+        "x": 240,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "50011d9c.df1f14",
+        "type": "function",
+        "z": "a64c8781.763fd8",
+        "name": "Store Time as a Flow Variable",
+        "func": "flow.set(\"capturetime\",msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 290,
+        "y": 620,
+        "wires": [
+            [
+                "b63827b5.2cecd8"
             ]
         ]
     },
