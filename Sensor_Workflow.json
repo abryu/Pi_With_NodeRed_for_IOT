@@ -1,0 +1,147 @@
+[
+    {
+        "id": "e6f3b93a.adcf58",
+        "type": "split",
+        "z": "907afe5f.9eef2",
+        "name": "Split Multiple Sensors Data",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": "1",
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 460,
+        "y": 240,
+        "wires": [
+            [
+                "5f8c4598.e09f4c"
+            ]
+        ]
+    },
+    {
+        "id": "f204f83c.3bed98",
+        "type": "daemon",
+        "z": "907afe5f.9eef2",
+        "command": "sudo",
+        "args": "python -u /home/pi/sensortagcollector.py -m IRtemperature",
+        "cr": false,
+        "redo": true,
+        "op": "string",
+        "name": "Get Data From Sensortags",
+        "x": 140,
+        "y": 240,
+        "wires": [
+            [
+                "e6f3b93a.adcf58",
+                "c4fe1ee1.36657"
+            ],
+            [
+                "c407e4da.6a6168"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "5f8c4598.e09f4c",
+        "type": "function",
+        "z": "907afe5f.9eef2",
+        "name": "JSON String to Object",
+        "func": "// reject empty messages\nif ( msg.payload.trim().length === 0 ) {\n return null;\n}\n\n// This try/catch seems to be needed because\n// occasionally a malformed JSON string is received\n// from the python script.\n// I couldn't see anything wrong with the strings that raise\n// exceptions, but this stops the errors causing\n// irritating problems.\n// UPDATE since adding the split node and the test for\n// zero length (after trimming) above, I haven't\n// seen the json conversion fail. Leaving it here just in case\n\ntry {\n msg.payload= JSON.parse(msg.payload.trim());\n} catch(err) {\n node.error(\"Couldn't convert JSON to object:\"+msg.payload);\n return null;\n}\n\n// Set the data to have come from the device's assigned name\n// The IoT output node must assert the device\n// type (along with the login credentials for the Pi gateway)!\nmsg.deviceId = msg.payload.devicename;\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 720,
+        "y": 240,
+        "wires": [
+            [
+                "d763c4b0.ca9818"
+            ]
+        ]
+    },
+    {
+        "id": "9a4b27ac.1acd48",
+        "type": "debug",
+        "z": "907afe5f.9eef2",
+        "name": "Display Data Transfer Status",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "payload",
+        "x": 1010,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "c4fe1ee1.36657",
+        "type": "debug",
+        "z": "907afe5f.9eef2",
+        "name": "Display Id and Data",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "payload",
+        "x": 160,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "c407e4da.6a6168",
+        "type": "debug",
+        "z": "907afe5f.9eef2",
+        "name": "Display Error",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "payload",
+        "x": 420,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "ebe8bd79.ed6f3",
+        "type": "cloudant out",
+        "z": "907afe5f.9eef2",
+        "name": "Store to DB",
+        "cloudant": "55590413.124cec",
+        "database": "sensortag",
+        "service": "_ext_",
+        "payonly": false,
+        "operation": "insert",
+        "x": 1110,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "d763c4b0.ca9818",
+        "type": "delay",
+        "z": "907afe5f.9eef2",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "10",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 940,
+        "y": 240,
+        "wires": [
+            [
+                "ebe8bd79.ed6f3",
+                "9a4b27ac.1acd48"
+            ]
+        ]
+    },
+    {
+        "id": "55590413.124cec",
+        "type": "cloudant",
+        "z": "",
+        "host": "4e3dd5c2-cfd7-40dd-83d2-bbd3a51b0168-bluemix.cloudant.com",
+        "name": "pi-cam"
+    }
+]

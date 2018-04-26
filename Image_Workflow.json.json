@@ -1,0 +1,315 @@
+[
+    {
+        "id": "a64c8781.763fd8",
+        "type": "tab",
+        "label": "Flow 4",
+        "disabled": true,
+        "info": ""
+    },
+    {
+        "id": "383f6199.41c0fe",
+        "type": "inject",
+        "z": "a64c8781.763fd8",
+        "name": "Trigger raspistill",
+        "topic": "b827",
+        "payload": "",
+        "payloadType": "str",
+        "repeat": "3600",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 130,
+        "y": 180,
+        "wires": [
+            [
+                "4f6d62a8.f84d9c",
+                "217a872c.3673e8",
+                "a04d23be.21ca4"
+            ]
+        ]
+    },
+    {
+        "id": "cc4fd31d.ba57c",
+        "type": "debug",
+        "z": "a64c8781.763fd8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "payload",
+        "x": 300,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "4f6d62a8.f84d9c",
+        "type": "exec",
+        "z": "a64c8781.763fd8",
+        "command": "raspistill -op 10 -t 10 -o /home/pi/camera/pi-cam.jpg -q 100",
+        "addpay": true,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "Take A Photo",
+        "x": 560,
+        "y": 180,
+        "wires": [
+            [
+                "62395d4e.46ca84",
+                "cac4cf31.1cead"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "e3a49fc0.18fd3",
+        "type": "debug",
+        "z": "a64c8781.763fd8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "payload",
+        "x": 540,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "217a872c.3673e8",
+        "type": "template",
+        "z": "a64c8781.763fd8",
+        "name": "Trigger Status",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "Triggered",
+        "output": "str",
+        "x": 160,
+        "y": 80,
+        "wires": [
+            [
+                "cc4fd31d.ba57c"
+            ]
+        ]
+    },
+    {
+        "id": "62395d4e.46ca84",
+        "type": "template",
+        "z": "a64c8781.763fd8",
+        "name": "Capture Status",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "Photo taken",
+        "output": "str",
+        "x": 420,
+        "y": 80,
+        "wires": [
+            [
+                "e3a49fc0.18fd3"
+            ]
+        ]
+    },
+    {
+        "id": "cac4cf31.1cead",
+        "type": "file in",
+        "z": "a64c8781.763fd8",
+        "name": "pi-cam.jpg",
+        "filename": "/home/pi/camera/pi-cam.jpg",
+        "format": "stream",
+        "chunk": false,
+        "sendError": false,
+        "x": 470,
+        "y": 300,
+        "wires": [
+            [
+                "b45eecef.1cb55",
+                "859bc6c4.114b48"
+            ]
+        ]
+    },
+    {
+        "id": "b6a34d2.f0810b",
+        "type": "debug",
+        "z": "a64c8781.763fd8",
+        "name": "File Info",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "payload",
+        "x": 470,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "5f2c6d38.eda544",
+        "type": "cloudant out",
+        "z": "a64c8781.763fd8",
+        "name": "Store to DB",
+        "cloudant": "55590413.124cec",
+        "database": "pi-cam-buffer-obj",
+        "service": "_ext_",
+        "payonly": false,
+        "operation": "insert",
+        "x": 1190,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "b45eecef.1cb55",
+        "type": "template",
+        "z": "a64c8781.763fd8",
+        "name": "Image Transfer Status",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "Image Transferring",
+        "output": "str",
+        "x": 480,
+        "y": 380,
+        "wires": [
+            [
+                "b6a34d2.f0810b"
+            ]
+        ]
+    },
+    {
+        "id": "a04d23be.21ca4",
+        "type": "exec",
+        "z": "a64c8781.763fd8",
+        "command": "service iot getdeviceid | grep id | cut -d = -f2 | tr -d ' '",
+        "addpay": false,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "Get Device Id",
+        "x": 140,
+        "y": 280,
+        "wires": [
+            [
+                "7c346124.7eeef"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "2cbac6e7.555a1a",
+        "type": "debug",
+        "z": "a64c8781.763fd8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "payload",
+        "x": 100,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "e75b4832.4b7158",
+        "type": "delay",
+        "z": "a64c8781.763fd8",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "10",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 920,
+        "y": 300,
+        "wires": [
+            [
+                "93436195.a6ef7",
+                "5f2c6d38.eda544"
+            ]
+        ]
+    },
+    {
+        "id": "93436195.a6ef7",
+        "type": "template",
+        "z": "a64c8781.763fd8",
+        "name": "Delay Status",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "Delayed",
+        "output": "str",
+        "x": 910,
+        "y": 380,
+        "wires": [
+            [
+                "a902c7eb.00bbc8"
+            ]
+        ]
+    },
+    {
+        "id": "a902c7eb.00bbc8",
+        "type": "debug",
+        "z": "a64c8781.763fd8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "payload",
+        "x": 920,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "859bc6c4.114b48",
+        "type": "function",
+        "z": "a64c8781.763fd8",
+        "name": "Add Metadata",
+        "func": "msg.topic = flow.get(\"deviceid\")\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 680,
+        "y": 300,
+        "wires": [
+            [
+                "e75b4832.4b7158"
+            ]
+        ]
+    },
+    {
+        "id": "7c346124.7eeef",
+        "type": "function",
+        "z": "a64c8781.763fd8",
+        "name": "Store Id as a Flow Variable",
+        "func": "flow.set(\"deviceid\",msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 120,
+        "y": 340,
+        "wires": [
+            [
+                "2cbac6e7.555a1a"
+            ]
+        ]
+    },
+    {
+        "id": "55590413.124cec",
+        "type": "cloudant",
+        "z": "",
+        "host": "4e3dd5c2-cfd7-40dd-83d2-bbd3a51b0168-bluemix.cloudant.com",
+        "name": "pi-cam"
+    }
+]
