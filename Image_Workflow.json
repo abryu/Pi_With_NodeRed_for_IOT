@@ -1,21 +1,5 @@
 [
     {
-        "id": "859bc6c4.114b48",
-        "type": "function",
-        "z": "a64c8781.763fd8",
-        "name": "Add Metadata",
-        "func": "msg.deviceid = flow.get(\"deviceid\")\nmsg.capturetime = flow.get(\"capturetime\")\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 700,
-        "y": 300,
-        "wires": [
-            [
-                "e75b4832.4b7158"
-            ]
-        ]
-    },
-    {
         "id": "383f6199.41c0fe",
         "type": "inject",
         "z": "a64c8781.763fd8",
@@ -23,7 +7,7 @@
         "topic": "IoT-Camera",
         "payload": "",
         "payloadType": "str",
-        "repeat": "3600",
+        "repeat": "5",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
@@ -56,7 +40,7 @@
         "id": "4f6d62a8.f84d9c",
         "type": "exec",
         "z": "a64c8781.763fd8",
-        "command": "raspistill -op 10 -t 10 -o /home/pi/camera/pi-cam.jpg -q 8",
+        "command": "raspistill -op 10 -t 10 -o /home/pi/camera/pi-cam.jpg -q 5",
         "addpay": true,
         "append": "",
         "useSpawn": "false",
@@ -132,7 +116,7 @@
         "z": "a64c8781.763fd8",
         "name": "pi-cam.jpg",
         "filename": "/home/pi/camera/pi-cam.jpg",
-        "format": "stream",
+        "format": "",
         "chunk": false,
         "sendError": false,
         "x": 470,
@@ -246,7 +230,8 @@
         "wires": [
             [
                 "93436195.a6ef7",
-                "5f2c6d38.eda544"
+                "5f2c6d38.eda544",
+                "8baa656.7c1bc98"
             ]
         ]
     },
@@ -300,6 +285,22 @@
         ]
     },
     {
+        "id": "859bc6c4.114b48",
+        "type": "function",
+        "z": "a64c8781.763fd8",
+        "name": "Add Metadata",
+        "func": "msg.deviceid = flow.get(\"deviceid\")\nmsg.capturetime = flow.get(\"capturetime\")\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 700,
+        "y": 300,
+        "wires": [
+            [
+                "e75b4832.4b7158"
+            ]
+        ]
+    },
+    {
         "id": "36e2e869.681858",
         "type": "exec",
         "z": "a64c8781.763fd8",
@@ -349,6 +350,36 @@
                 "b63827b5.2cecd8"
             ]
         ]
+    },
+    {
+        "id": "8baa656.7c1bc98",
+        "type": "visual-recognition-v3",
+        "z": "a64c8781.763fd8",
+        "name": "Detect Face",
+        "apikey": "__PWRD__",
+        "image-feature": "detectFaces",
+        "lang": "en",
+        "x": 830,
+        "y": 180,
+        "wires": [
+            [
+                "8b94999.7418f68"
+            ]
+        ]
+    },
+    {
+        "id": "8b94999.7418f68",
+        "type": "debug",
+        "z": "a64c8781.763fd8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "result",
+        "x": 1040,
+        "y": 100,
+        "wires": []
     },
     {
         "id": "55590413.124cec",
