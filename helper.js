@@ -5,7 +5,7 @@ var fs = require('fs');
 var visualRecognition = new VisualRecognitionV3({
 
     version: '2018-03-19',
-    api_key: '40f51d5e0d313b46835129e22896edab51fbf374'
+    api_key: ''
 
 });
 
