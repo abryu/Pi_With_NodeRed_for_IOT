@@ -385,7 +385,7 @@
         "id": "55590413.124cec",
         "type": "cloudant",
         "z": "",
-        "host": "4e3dd5c2-cfd7-40dd-83d2-bbd3a51b0168-bluemix.cloudant.com",
+        "host": "YORK_CLOUDANT_HOST-bluemix.cloudant.com",
         "name": "pi-cam"
     }
 ]
